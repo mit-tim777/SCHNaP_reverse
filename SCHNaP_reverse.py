@@ -19,6 +19,7 @@ def rodrigues_matrix(axis, angle):
     ])
     
     return np.eye(3) + np.sin(angle) * K + (1 - np.cos(angle)) * np.dot(K, K)
+
 def get_rotation_matrix(w):
 
     L = np.sqrt(w[3]**2 + w[4]**2)
@@ -73,19 +74,21 @@ ax.view_init(elev=20.0, azim=30.0)
 ax.set_aspect('equal')
 ax.set_proj_type('ortho')
 # shift,slide,rise,tilt,roll,twist
-data = [
-        (0.0, 2.0, 0.5, -np.pi/8, 0.0, 0.0),
-        (0.0, 0.5, 2.0, np.pi/4, 0.0, 0.0),
-        (0.0, -2.0, 0.5, np.pi/4, 0.0, 0.0),
-        # (0.0, 1.0, 0.5, np.pi/2, 0.0, 0.0),
-        # (0.0, 3.0, 1.5, np.pi/4, 0.0, 0.0),
-        # (0.0, 2.0, 0.5, np.pi/8, 0.0, 0.0),
-        # (0.0, 2.0, 0.5, np.pi/4, 0.0, 0.0),
-        # (0.0, 2.0, 0.5, np.pi/4, 0.0, 0.0),
-        # (0.0, 2.0, 0.5, np.pi/4, 0.0, 0.0),
-        # (0.0, 2.0, 0.5, np.pi/4, 0.0, 0.0),
-       ]
 
+data = []
+with open('pars.txt', 'r') as f:
+    lines = f.readlines()
+    for line in lines[2:-1]:
+        w = [float(x) for x in line.split()[7:13]]
+        for i in range(3):
+            w[i] *= 0.2
+        for i in range(3,6):
+            w[i] *= np.pi/180.0
+        data.append(w)
+
+print("Loaded data:")
+for i, w in enumerate(data):
+    print(f"Step {i}: {w}")
 
 T_i = np.eye(4)
 draw_triad(ax, T_i, scale=1.0)
@@ -103,8 +106,8 @@ for i, w in enumerate(data):
     
     ax.plot([T_i[0,3], T_i[0,3] + dw[0]], [T_i[1,3], T_i[1,3] + dw[1]], [T_i[2,3], T_i[2,3] + dw[2]], alpha=0.5)
     T_i = T_i_plus_1
-    draw_triad(ax, T_i, scale=1.0)
-    draw_triad(ax, T_i_mst,scale=0.5)
+    draw_triad(ax, T_i, scale=0.5)
+    draw_triad(ax, T_i_mst,scale=0.2)
 
 for a in range(len(data)+1):
     glob_pos = np.array([0.0,0.0,0.0])
