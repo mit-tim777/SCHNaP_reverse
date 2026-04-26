@@ -105,6 +105,7 @@ for i, w in enumerate(data):
     dw = np.dot(T_i_mst[:3, :3], w[:3])
     
     ax.plot([T_i[0,3], T_i[0,3] + dw[0]], [T_i[1,3], T_i[1,3] + dw[1]], [T_i[2,3], T_i[2,3] + dw[2]], alpha=0.5)
+    print(T_i[:3,3])
     T_i = T_i_plus_1
     draw_triad(ax, T_i, scale=0.5)
     draw_triad(ax, T_i_mst,scale=0.2)
